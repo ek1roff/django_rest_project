@@ -15,12 +15,26 @@ class BlogAPIView(generics.ListAPIView):
         return Response({'posts': BlogSerializer(b, many=True).data})
 
     def post(self, request):
-        post_new = Blog.objects.create(
-            title=request.data['title'],
-            content=request.data['content'],
-            cat_id=request.data['cat_id']
-        )
-        return Response({'post': BlogSerializer(post_new).data})
+        serializer = BlogSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        return Response({'post': serializer.data})
+
+    def put(self, request, *args, **kwargs):
+        pk = kwargs.get("pk", None)
+        if not pk:
+            return Response({"error": "Method PUT not allowed"})
+
+        try:
+            instance = Blog.objects.get(pk=pk)
+        except:
+            return Response({"error": "Objects does not exist"})
+
+        serializer = BlogSerializer(data=request.data, instance=instance)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({"post": serializer.data})
 
 def index(request):
     return render(request, 'blog/index.html', {'title': 'Главная страница'})
