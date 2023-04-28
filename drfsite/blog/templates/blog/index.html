@@ -1,45 +1,40 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<h1>{{ title }}</h1>
-<div class="container">
-<row>
-    <h3>Пост 1</h3>
-    <div>Какой-то текст</div>
-<iframe width="560" height="315"
-  src="https://www.youtube.com/embed/3fv2fC114Z0"
-  title="YouTube video player" frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-    allowfullscreen>
-</iframe>
-    <div>Ещё текст</div>
-</row>
-</div>
-<hr>
-<row>
-    <div>
-        <div class="row">
-        <div class="col">
-            <h2>{{p.title}}</h2>
-            <p>{{p.content|linebreaks|truncatewords:50}}</p>
-        </div>
-        <div class="col">
+<div align="center"><h1>{{ title }}</h1></div>
+<div class="container-fluid">
+
+  <div class="col-2"></div>
+  <div class="col">
+    {% for p in posts %}
+    <div class="container">
+    <div class="row">
+      <div class="col">
+        <h2>{{p.title}}</h2>
+        <p>{{p.content|linebreaks|truncatewords:50}}</p>
+      </div>
+      <div class="col">
         {% if p.photo %}
-            <img src="{{p.photo.url}}" class="img-fluid float-end" width="165" height="244">
-        </div>
+        <img src="{{p.photo.url}}" class="img-fluid float-end" width="165" height="244">
         {% endif %}
+      </div>
     </div>
 
     <div class="row">
-        <div class="col">
-            <a class="btn btn-secondary" href="{{ p.get_absolute_url }}">Читать пост</a>
-        </div>
-        <div class="col">
-             <p>Категория: {{p.cat}}</p>
-             <p>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
-        </div>
+      <div class="col">
+        <a class="btn btn-secondary" href="{{ p.get_absolute_url }}">Читать пост</a>
+      </div>
+      <div class="col">
+        <p>Категория: {{p.cat}}</p>
+        <p>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
+      </div>
     </div>
     </div>
-</row>
-<hr>
+    <hr>
+    {% endfor %}
+  </div>
+
+  <div class="col-2"></div>
+
+</div>
 {% endblock %}

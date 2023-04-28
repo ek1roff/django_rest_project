@@ -15,8 +15,3 @@ footer {
     line-height: 30px;
     background-color: #212529;
 }
-
-.sidebar {
-    display: flex;
-    height: 100vh;
-}

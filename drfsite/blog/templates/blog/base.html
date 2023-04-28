@@ -13,11 +13,9 @@
 <body>
   <!--NAVBAR-->
   <header>
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-    <a href="#" class="navbar-brand">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Nuxt_logo.svg" width="25" height="25" alt="logo">
-    </a>
+
+
     <button class="navbar-toggler" type="button" data-toggle="collapse"
             data-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,14 +23,21 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="col-auto">
+        <div class="mx-3">
         <ul class="navbar-nav mr-auto">
+          <li>
+            <a href="#" class="navbar-brand">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/Nuxt_logo.svg" width="25" height="25" alt="logo">
+            </a>
+          </li>
             <li class="nav-item active">
-                <a href="#" class="nav-link">Главная</a>
+                <a href="{% url 'index' %}" class="nav-link">Главная</a>
             </li>
             <li class="nav-item ">
                 <a href="#" class="nav-link">Контакты</a>
             </li>
         </ul>
+        </div>
         </div>
         <div class="col-1"></div>
         <div class="col-5">
@@ -41,11 +46,13 @@
             <button class="btn btn-outline-success" type="submit">Поиск</button>
           </form>
         </div>
-        <div class="col-2"></div>
+        <div class="col-1"></div>
         <div class="col-auto">
+          <div class="mx-auto">
         <a href="#" class="btn btn-outline-light mr-2">Вход</a>
         <a href="#" class="btn btn-outline-light mr-2">Регистрация</a>
         <a href="#" class="btn btn-outline-light">Выход</a>
+            </div>
         </div>
     </div>
   </nav>
@@ -53,9 +60,12 @@
   </header>
   <!--END NAVBAR-->
 
-  <div class="row">
+  <table class="table">
+  <tr>
     <!--SIDEBAR-->
-    <div class="col-auto sidebar">
+    <!--<div class="col-auto sidebar p-3 mb-2 flex-column bg-dark">-->
+    <td class="sidebar bg-dark">
+      <div class="float-left">
       <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -108,16 +118,22 @@
             <li><a class="dropdown-item" href="#">Sign out</a></li>
           </ul>
         </div>
+        <div class="nav nav-pills flex-column mb-auto"></div>
       </div>
-    </div>
+      </div>
+    </td>
     <!--END SIDEBAR-->
+    <td>
     <div class="col offset-1">
-      <div class="container-xxl">
+      <div class="container-fluid">
         {% block content %}
         {% endblock %}
       </div>
     </div>
-  </div>
+    <div class="col-1"></div>
+    </td>
+  </tr>
+  </table>
 
 
   <!--FOOTER-->
