@@ -4,8 +4,9 @@ from rest_framework import routers
 from blog.views import (BlogViewSet,
                         index)
 
-router = routers.SimpleRouter()
+router = routers.DefaultRouter()
 router.register(r'blog', BlogViewSet)
+print(router.urls)
 
 
 urlpatterns = [
