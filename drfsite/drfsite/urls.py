@@ -1,19 +1,20 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from rest_framework import routers
-from blog.views import (BlogViewSet,
+from blog.views import (BlogAPIList,
+                        BlogAPIUpdate,
+                        BlogAPIDestroy,
                         index)
 
-router = routers.DefaultRouter()
-router.register(r'blog', BlogViewSet)
-print(router.urls)
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/drf-auth/', include('rest_framework.urls')),
     path('', index, name='index'),
-    path('api/v1/', include(router.urls)),
-    # path('api/v1/bloglist/', BlogViewSet.as_view({'get': 'list'})),
-    # path('api/v1/bloglist/<int:pk>/', BlogViewSet.as_view({'put': 'update'})),
-    # path('api/v1/blogdetail/<int:pk>/', BlogViewSet.as_view({'delete': 'destroy'})),
+    path('api/v1/blog/', BlogAPIList.as_view()),
+    path('api/v1/blog/<int:pk>/', BlogAPIUpdate.as_view()),
+    path('api/v1/blogdelete/<int:pk>/', BlogAPIDestroy.as_view()),
+    path('api/v1/auth/', include('djoser.urls')),
+    re_path(r'^auth/', include('djoser.urls.authtoken')),
 ]
