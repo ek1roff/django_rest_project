@@ -5,15 +5,19 @@ from autoslug import AutoSlugField
 
 class Blog(models.Model):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
+    slug = AutoSlugField(populate_from=title,
+                         unique_with=['time_create__month'])
     content = models.TextField(blank=True, verbose_name='Текст статьи')
-    #photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото', null=True)
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото', null=True)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
-    slug = AutoSlugField(populate_from=title,
-                         unique_with=['time_create__month'])
-    user = models.ForeignKey(get_user_model(), verbose_name='Пользователь', on_delete=models.CASCADE)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, verbose_name='Пользователь')
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('post', kwargs={'post_slug': self.slug})
 
     def __str__(self):
         return self.title
