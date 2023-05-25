@@ -48,9 +48,12 @@
         <div class="col-1"></div>
         <div class="col-auto">
           <div class="mx-auto">
-        <a href="#" class="btn btn-outline-light mr-2">Вход</a>
-        <a href="#" class="btn btn-outline-light mr-2">Регистрация</a>
-        <a href="#" class="btn btn-outline-light">Выход</a>
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'logout' %}" class="btn btn-outline-light">Выход</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="btn btn-outline-light mr-2">Вход</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-light mr-2">Регистрация</a>
+            {% endif %}
             </div>
         </div>
     </div>
@@ -62,8 +65,8 @@
   <table class="table">
   <tr>
     <!--SIDEBAR-->
-    <!--<div class="col-auto sidebar p-3 mb-2 flex-column bg-dark">-->
-    <td class="sidebar bg-dark">
+    <!--div class="col-auto sidebar p-3 mb-2 flex-column bg-dark"-->
+    <td class="sidebar bg-dark" width="20%">
       <div class="float-left">
       <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
@@ -124,67 +127,15 @@
     <!--END SIDEBAR-->
     <!--CONTENT-->
     <td>
+    <div class="container">
 
-    <div class="container-fluid mt-5" style="background-color: antiquewhite">
-    <div class="container p-5">
-      <div class="card" style="width: 40rem">
-        <h4 class="card-title">Заголовок</h4>
-        <img src="{% static 'blog/images/rfv.jpg' %}" alt="" class="card-img-top">
-        <div class="card-body">
-          <div class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, nesciunt, recusandae. A corporis dolore doloremque eos error esse est expedita, id labore perspiciatis, quaerat quia quibusdam repudiandae, tenetur vero voluptas.</div>
-          <a href="" class="btn btn-primary">Читать</a>
-        </div>
-      </div>
-    </div>
-
-
-
-    <div class="container p-5">
-      <div class="card" style="width: 40rem">
-        <div class="container p-2">
-        <div class="row"><h4 class="card-title">Заголовок</h4></div>
-        <div class="row">
-        <div class="col-4"><img src="{% static 'blog/images/123.jpg' %}" alt="" class="card-img-top"></div>
-          <div class="col-8">
-        <div class="card-body">
-          <div class="card-text"><b>Описание: </b>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, nesciunt, recusandae. A corporis dolore doloremque eos error esse est expedita, id labore perspiciatis, quaerat quia quibusdam repudiandae, tenetur vero voluptas.</div>
-        </div>
-            </div>
-        </div>
-        </div>
-
-        <div class="container p-2">
-        <div class="row">
-          <div class="col-3">
-            <a href="" class="btn btn-primary">Читать</a>
-          </div>
-          <div class="col-3">
-            <small>Автор: <a href="#">DDD</a></small>
-          </div>
-          <div class="col-6">
-            <small>Дата добавления: 01.01.8001</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="container p-2">
-        <small><b>Теги:</b> драма мистика музыкальный сэйнэн</small>
-      </div>
-
-      </div>
-    </div>
-  </div>
-
-
-      <div class="container">
-    <div class="col offset-1">
       <div class="container-fluid">
         {% block content %}
         {% endblock %}
       </div>
+
+
     </div>
-    <div class="col-1"></div>
-        </div>
     </td>
     <!--END CONTENT-->
   </tr>
