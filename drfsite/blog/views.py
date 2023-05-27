@@ -1,7 +1,8 @@
 from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import DeleteView, ListView, CreateView
 from rest_framework import generics, viewsets
@@ -9,10 +10,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
+from .forms import AddPostForm
 from .utils import DataMixin
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
-from .models import Blog, Category
+from .models import Blog, Category, Profile
 from .serializers import BlogSerializer
+from django.views.generic.detail import DetailView
 
 
 class BlogAPIList(generics.ListCreateAPIView):
@@ -62,7 +65,7 @@ class ShowPost(DataMixin, DeleteView):
 class RegisterUser(DataMixin, CreateView):
     form_class = UserCreationForm
     template_name = 'blog/register.html'
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('create_user_profile')
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -90,3 +93,39 @@ def logout_user(request):
 
 def about(request):
     return render(request, 'blog/about.html', {'title': 'О сайте'})
+
+
+class ShowProfilePageView(DetailView):
+    model = Profile
+    template_name = 'blog/user_profile.html'
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_user = get_object_or_404(Profile, user_id=self.kwargs['pk'])
+        context['page_user'] = page_user
+        return context
+
+
+class CreateProfilePageView(CreateView):
+    model = Profile
+
+    template_name = 'blog/create_profile.html'
+    fields = ['profile_pic', 'bio', 'facebook', 'twitter', 'instagram']
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    success_url = reverse_lazy('index')
+
+
+class AddPage(DataMixin, LoginRequiredMixin, CreateView):
+    form_class = AddPostForm
+    template_name = 'blog/addpage.html'
+    login_url = reverse_lazy('home')
+    prepopulated_fields = {'slug': ('title',)}
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Добавление статьи')
+        return dict(list(context.items()) + list(c_def.items()))

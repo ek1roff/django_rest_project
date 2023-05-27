@@ -4,9 +4,9 @@ from rest_framework import routers
 from blog.views import (BlogAPIList,
                         BlogAPIUpdate,
                         BlogAPIDestroy,
-                        BlogHome,
+                        BlogHome, AddPage,
                         ShowPost,
-                        about, RegisterUser, LoginUser, logout_user)
+                        about, RegisterUser, LoginUser, logout_user, ShowProfilePageView, CreateProfilePageView)
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView, TokenVerifyView,
@@ -21,6 +21,9 @@ urlpatterns = [
     path('login/', LoginUser.as_view(), name='login'),
     path('logout/', logout_user, name='logout'),
     path('about/', about, name='about'),
+    path('addpage/', AddPage.as_view(), name='addpage'),
+    path('user_profile/<int:pk>/', ShowProfilePageView.as_view(), name='user_profile'),
+    path('create_profile_page/', CreateProfilePageView.as_view(), name='create_user_profile'),
     # path('api/v1/blog/', BlogAPIList.as_view()),
     # path('api/v1/blog/<int:pk>/', BlogAPIUpdate.as_view()),
     # path('api/v1/blogdelete/<int:pk>/', BlogAPIDestroy.as_view()),

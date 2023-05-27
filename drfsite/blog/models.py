@@ -1,14 +1,17 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import User
 from django.db import models
 from autoslug import AutoSlugField
+from django.utils.safestring import mark_safe
 
 
 class Blog(models.Model):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    slug = AutoSlugField(populate_from=title,
-                         unique_with=['time_create__month'])
+    # slug = AutoSlugField(populate_from=title,
+    #                      unique_with=['time_create__month'])
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     content = models.TextField(blank=True, verbose_name='Текст статьи')
-    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото', null=True)
+    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото', null=True, blank=True)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
@@ -29,3 +32,17 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    bio = models.TextField(null=True, blank=True)
+    profile_pic = models.ImageField(null=True, blank=True, upload_to="blog/images/profile/")
+    facebook = models.CharField(max_length=50, null=True, blank=True)
+    twitter = models.CharField(max_length=50, null=True, blank=True)
+    instagram = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return str(self.user)
+
+
