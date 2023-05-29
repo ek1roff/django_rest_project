@@ -3,6 +3,7 @@ from django.core.cache import cache
 
 from blog.models import Category
 from django.contrib.auth.models import User
+from .models import CustomUser, Blog
 
 menu = [{'title': "О сайте", 'url_name': 'about'},
         {'title': "Добавить статью", 'url_name': 'add_page'},
@@ -10,7 +11,7 @@ menu = [{'title': "О сайте", 'url_name': 'about'},
 
 
 class DataMixin:
-    paginate_by = 3
+    paginate_by = 10
 
     def get_user_context(self, **kwargs):
         context = kwargs

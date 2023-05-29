@@ -1,10 +1,13 @@
+from urllib import request
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.safestring import mark_safe
 
-from .models import Blog, Category
+from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import Blog, Category, CustomUser
 
 
 class BlogAdmin(admin.ModelAdmin):
@@ -13,8 +16,9 @@ class BlogAdmin(admin.ModelAdmin):
     search_fields = ('title', 'content')
     list_editable = ('is_published',)
     list_filter = ('is_published', 'time_create')
-    prepopulated_fields = {'slug': ('title',)}
-    fields = ('title', 'slug', 'cat', 'content', 'photo', 'is_published', 'time_create', 'time_update', 'get_html_photo')
+    # prepopulated_fields = {'slug': ('title',)}
+    fields = ('title', 'cat', 'content', 'photo', 'is_published',
+              'time_create', 'time_update', 'get_html_photo', 'user')
     readonly_fields = ('time_create', 'time_update', 'get_html_photo')
     save_on_top = True
 
@@ -32,5 +36,17 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
+# admin.site.register(Blog, BlogAdmin)
+# admin.site.register(Category, CategoryAdmin)
+
+class CustomUserAdmin(UserAdmin):
+    add_form = CustomUserCreationForm
+    form = CustomUserChangeForm
+    model = CustomUser
+    list_display = ['email', 'username',]
+
+
+admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Blog, BlogAdmin)
 admin.site.register(Category, CategoryAdmin)
+
