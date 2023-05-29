@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% load blog_tags %}
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -107,23 +108,42 @@
           </li>
 
            {% if cat_selected == 0 %}
-                   <li class="selected">Все категории</li>
+               <li class="nav-item">
+                 <a href="#" class="nav-link active" aria-current="page">
+                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                   Все категории
+                 </a>
+               </li>
                 {% else %}
-                   <li><a href="{% url 'index' %}" class="bd-links-link d-inline-block rounded">Все категории</a></li>
+               <li class="nav-item">
+                 <a href="{% url 'index' %}" class="nav-link text-white" aria-current="page">
+                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                   Все категории
+                 </a>
+               </li>
                 {% endif %}
                     <p></p>
 
                 {% for c in cats %}
                   {% if c.blog__count > 0 %}
                       {% if c.pk == cat_selected %}
-                        <li class="bd-links-link d-inline-block rounded">{{c.name}}</li>
+                        <li class="nav-item">
+                          <a href="#" class="nav-link active" aria-current="page">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                            {{c.name}}
+                          </a>
+                        </li>
                       {% else %}
-                        <li><a href="{{ c.get_absolute_url }}" class="bd-links-link d-inline-block rounded">{{c.name}}</a></li>
+                        <li class="nav-item">
+                          <a href="{{ c.get_absolute_url }}" class="nav-link text-white" aria-current="page">
+                            <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+                            {{c.name}}
+                          </a>
+                         </li>
                       {% endif %}
                   {% endif %}
                     <p></p>
                 {% endfor %}
-
         </ul>
         <hr>
 

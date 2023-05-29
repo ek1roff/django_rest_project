@@ -1,76 +1,41 @@
 {% extends 'blog/base.html' %}
 {% load static %}
 {% block content %}
+
+{% for p in posts %}
 <div class="container p-5">
-      <div class="card" style="width: 40rem">
-        <div class="container p-2">
-        <div class="row"><h4 class="card-title">Заголовок</h4></div>
-        <div class="row">
-        <div class="col-4"><img src="{% static 'blog/images/123.jpg' %}" alt="" class="card-img-top"></div>
-          <div class="col-8">
-            <div class="card-body">
-            <div class="card-text"><b>Описание: </b>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Modi, nesciunt, recusandae. A corporis dolore doloremque eos error esse est expedita, id labore perspiciatis, quaerat quia quibusdam repudiandae, tenetur vero voluptas.</div>
-            </div>
-          </div>
-        </div>
-        </div>
-        <div class="container p-2">
-        <div class="row">
-          <div class="col-3">
-            <a href="" class="btn btn-primary">Читать</a>
-          </div>
-          <div class="col-3">
-            <small>Автор: <a href="#">DDD</a></small>
-          </div>
-          <div class="col-6">
-            <small>Дата добавления: 01.01.8001</small>
+  <div class="card" style="width:45rem">
+    <div class="container p-2">
+      <div class="row">
+        <h4 class="card-title">{{ p.title }}</h4>
+      </div>
+      <div class="row">
+        <div class="col-4"><img src="{{ p.photo.url }}" alt="" class="card-img-top"></div>
+        <div class="col-8">
+          <div class="card-body">
+            <div class="card-text">{{p.content|linebreaks|truncatewords:50}}</div>
           </div>
         </div>
       </div>
-
-      <div class="container p-2">
-        <small><b>Теги:</b> драма мистика музыкальный сэйнэн</small>
-      </div>
-
+    </div>
+    <div class="container p-2">
+      <div class="row">
+        <div class="col-3">
+          <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Читать</a>
+        </div>
+        <div class="col-3">
+          <small>Автор: <a href="#">{{ p.user }}</a></small>
+        </div>
+        <div class="col-6">
+          <small>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</small>
+        </div>
       </div>
     </div>
-
-
-<div align="center"><h1>{{ title }}</h1></div>
-<div class="container-fluid">
-
-  <div class="col-2"></div>
-  <div class="col">
-    {% for p in posts %}
-    <div class="container">
-    <div class="row">
-      <div class="col">
-        <h2>{{p.title}}</h2>
-        <p>{{p.content|linebreaks|truncatewords:50}}</p>
-      </div>
-      <div class="col">
-        {% if p.photo %}
-        <img src="{{p.photo.url}}" class="img-fluid float-end" width="165" height="244">
-        {% endif %}
-      </div>
+    <div class="container p-2">
+      <small><b>Теги:</b> {{ p.cat }}</small>
     </div>
-
-    <div class="row">
-      <div class="col">
-        <a class="btn btn-secondary" href="{{ p.get_absolute_url }}">Читать пост</a>
-        <p>{{ p.user }}</p>
-      </div>
-      <div class="col">
-        <p>Категория: {{p.cat}}</p>
-        <p>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p>
-      </div>
-    </div>
-    </div>
-    <hr>
-    {% endfor %}
   </div>
-
-  <div class="col-2"></div>
-
 </div>
+{% endfor %}
+
 {% endblock %}
