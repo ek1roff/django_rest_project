@@ -44,6 +44,19 @@ class CustomUserCreationForm(UserCreationForm):
 
 
 class CustomUserChangeForm(UserChangeForm):
+    username = forms.CharField(label='Логин',
+                               widget=forms.TextInput(attrs={'class': 'form-control'}),
+                               required=False)
+    first_name = forms.CharField(label='Имя',
+                                 widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                 required=False)
+    last_name = forms.CharField(label='Фамилия',
+                                widget=forms.TextInput(attrs={'class': 'form-control'}),
+                                required=False)
+    avatar = forms.FileField(label='Аватар',
+                             widget=forms.FileInput(attrs={'class': 'form-control'}),
+                             required=False)
+
     class Meta:
         model = CustomUser
-        fields = ('username', 'email')
+        fields = ('username', 'first_name', 'last_name', 'avatar')

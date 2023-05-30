@@ -1,6 +1,8 @@
+{% extends 'blog/index.html' %}
 {% load static %}
 {% block content %}
 
+<div class="container p-5">
 <div class="header-bar">
   <h1>Profile</h1>
     <a href="{% url 'index' %}">Back</a>
@@ -12,22 +14,22 @@
 {% else %}
  <img src="{% static 'blog/images/cat.svg' %}" height=100 width=100><br><br>
 {% endif %}
+
 <p><strong>Username:</strong> {{ page_user }}</p><br><br>
-<p><strong>Bio:</strong> {{ profile.bio }}</p><br><br>
-{% if profile.twitter %}
-  <p><strong>Twitter:</strong> {{ profile.twitter }}</p><br><br>
-{% endif %}
-{% if profile.instagram %}
-  <p><strong>Instagram:</strong> {{ profile.instagram }}</p><br><br>
-{% endif %}
-{% if profile.facebook %}
-  <p><strong>Facebook:</strong> {{ profile.facebook }}</p><br><br>
+<p><strong>О себе:</strong> {{ profile.bio }}</p><br><br>
+<p><strong>Зарегистрирован с </strong>{{ page_user.date_joined }}</p>
+
+
+{% if page_user.id == user.id %}
+    <p>Привет</p>
+
 {% endif %}
 
-{% if user.id == profile.user.id %}
-  <a href="{% url 'edit_user_profile' profile.id %}"><button class="button">Edit</button></a>
-{% endif %}
+{% for p in posts %}
+    <a href="{{ p.get_absolute_url }}">{{ p.title }} </a>
+{% endfor %}
+
 
 </div>
-
+</div>
 {% endblock content %}

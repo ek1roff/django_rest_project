@@ -11,7 +11,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from .forms import AddPostForm, CustomUserCreationForm
+from .forms import AddPostForm, CustomUserCreationForm, CustomUserChangeForm
 from .utils import DataMixin
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from .models import Blog, Category, CustomUser
@@ -115,28 +115,38 @@ def about(request):
     return render(request, 'blog/about.html', {'title': 'О сайте'})
 
 
-# class ShowProfilePageView(DetailView):
-#     model = Profile
-#     template_name = 'blog/user_profile.html'
-#
-#     def get_context_data(self, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         page_user = get_object_or_404(Profile, user_id=self.kwargs['pk'])
-#         context['page_user'] = page_user
-#         return context
-#
-#
-# class CreateProfilePageView(CreateView):
-#     model = Profile
-#
-#     template_name = 'blog/create_profile.html'
-#     fields = ['profile_pic', 'bio', 'facebook', 'twitter', 'instagram']
-#
-#     def form_valid(self, form):
-#         form.instance.user = self.request.user
-#         return super().form_valid(form)
-#
-#     success_url = reverse_lazy('index')
+class ProfilePage(ListView):
+
+    model = Blog
+    template_name = 'blog/user_profile.html'
+    context_object_name = 'posts'
+
+    def get_queryset(self):
+        return Blog.objects.filter(user_id=self.kwargs['pk'])
+
+    def get_context_data(self, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
+        context['page_user'] = page_user
+        return context
+
+
+class CreateProfilePageView(CreateView):
+    #model = CustomUser
+    form_class = CustomUserChangeForm
+    template_name = 'blog/create_profile.html'
+    success_url = reverse_lazy('index')
+    #fields = ['username', 'first_name', 'last_name', 'avatar']
+
+    # def form_valid(self, form):
+    #     form.instance.user = self.request.user
+    #     return super().form_valid(form)
+    #
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title="Регистрация")
+        return dict(list(context.items()) + list(c_def.items()))
 
 
 # class AddPage(DataMixin, LoginRequiredMixin, CreateView):

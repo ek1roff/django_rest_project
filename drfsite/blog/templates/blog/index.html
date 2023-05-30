@@ -24,7 +24,7 @@
           <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Читать</a>
         </div>
         <div class="col-3">
-          <small>Автор: <a href="#">{{ p.user }}</a></small>
+          <small>Автор: <a href="{% url 'user_profile' pk=p.user_id %}">{{ p.user }}</a></small>
         </div>
         <div class="col-6">
           <small>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</small>
