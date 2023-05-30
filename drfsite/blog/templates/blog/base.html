@@ -51,10 +51,22 @@
           <div class="col-auto">
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
             {% if request.user.is_authenticated %}
-            <a href="{% url 'logout' %}" class="btn btn-outline-light">Выход</a>
+              <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                  <strong>{{ user.username }}</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                  <li><a class="dropdown-item" href="{% url 'addpage' %}">Создать пост</a></li>
+                  <li><a class="dropdown-item" href="#">Settings</a></li>
+                  <li><a class="dropdown-item" href="{% url 'user_profile' pk=user.id %}">Профиль</a></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="{% url 'logout' %}">Выход</a></li>
+                </ul>
+              </div>
             {% else %}
-            <a href="{% url 'login' %}" class="btn btn-outline-light mr-2">Вход</a>
-            <a href="{% url 'register' %}" class="btn btn-outline-light mr-2">Регистрация</a>
+              <a href="{% url 'login' %}" class="btn btn-outline-light mr-2">Вход</a>
+              <a href="{% url 'register' %}" class="btn btn-outline-light mr-2">Регистрация</a>
             {% endif %}
             </div>
           </div>
@@ -109,6 +121,7 @@
             </a>
           </li>
 
+          <hr>
            {% if cat_selected == 0 %}
                <li class="nav-item">
                  <a href="#" class="nav-link active" aria-current="page">
@@ -149,28 +162,8 @@
         </ul>
         <hr>
 
-        {% if request.user.is_authenticated %}
-        <div class="dropdown">
-          <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
-            <strong>{{ user.username }}</strong>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="{% url 'addpage' %}">New project...</a></li>
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="{% url 'user_profile' pk=user.id %}">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Sign out</a></li>
-          </ul>
-        </div>
-        {% else %}
-        <div><a href="{% url 'login' %}" class="nav-link text-white">
-          <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
-          Войти
-        </a></div>
-        {% endif %}
 
-        <div class="nav nav-pills flex-column mb-auto"></div>
+
       </div>
       </div>
     </td>

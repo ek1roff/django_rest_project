@@ -5,7 +5,7 @@ from django.contrib.auth.views import LoginView
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import DeleteView, ListView, CreateView
+from django.views.generic import DeleteView, ListView, CreateView, UpdateView
 from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
@@ -131,12 +131,12 @@ class ProfilePage(ListView):
         return context
 
 
-class CreateProfilePageView(CreateView):
-    #model = CustomUser
-    form_class = CustomUserChangeForm
-    template_name = 'blog/create_profile.html'
-    success_url = reverse_lazy('index')
-    #fields = ['username', 'first_name', 'last_name', 'avatar']
+class CreateProfilePageView(UpdateView):
+    model = CustomUser
+    # form_class = CustomUserChangeForm
+    # template_name = 'blog/create_profile.html'
+    # success_url = reverse_lazy('index')
+    fields = ['username', 'first_name', 'last_name', 'avatar']
 
     # def form_valid(self, form):
     #     form.instance.user = self.request.user
@@ -145,7 +145,7 @@ class CreateProfilePageView(CreateView):
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Регистрация")
+        c_def = self.get_user_context(title="Настройки профиля")
         return dict(list(context.items()) + list(c_def.items()))
 
 
