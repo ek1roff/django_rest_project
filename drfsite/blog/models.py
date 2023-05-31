@@ -8,7 +8,11 @@ from django.utils.safestring import mark_safe
 
 
 class CustomUser(AbstractUser):
-    avatar = models.ImageField(null=True, blank=True, upload_to="blog/images/profile/")
+    slug = AutoSlugField(populate_from='username', unique=True)
+    avatar = models.ImageField(null=True, blank=True, upload_to="images/avatars/", default='images/avatars/default.jpg')
+
+    def get_absolute_url(self):
+        return reverse('user_profile', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.username
@@ -16,11 +20,9 @@ class CustomUser(AbstractUser):
 
 class Blog(models.Model):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    # slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="URL")
     content = models.TextField(blank=True, verbose_name='Текст статьи')
-    photo = models.ImageField(upload_to="photos/%Y/%m/%d/", verbose_name='Фото',)
+    image = models.ImageField(upload_to="images/%Y/%m/%d/", verbose_name='Изображение',)
     time_create = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
-    time_update = models.DateTimeField(auto_now=True, verbose_name='Время изменения')
     is_published = models.BooleanField(default=True, verbose_name='Публикация')
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, verbose_name='Категория')
     user = models.ForeignKey('CustomUser', on_delete=models.CASCADE, verbose_name='Автор')
@@ -48,15 +50,3 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ('id',)
-
-
-# class Profile(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-#     bio = models.TextField(null=True, blank=True)
-#     profile_pic = models.ImageField(null=True, blank=True, upload_to="blog/images/profile/")
-#     facebook = models.CharField(max_length=50, null=True, blank=True)
-#     twitter = models.CharField(max_length=50, null=True, blank=True)
-#     instagram = models.CharField(max_length=50, null=True, blank=True)
-#
-#     def __str__(self):
-#         return str(self.user)

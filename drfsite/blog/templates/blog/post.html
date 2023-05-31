@@ -3,8 +3,8 @@
 {% block content %}
 <h1>{{page.title}}</h1>
 <div class="container px-4 text-justify">
-{% if post.photo %}
-<p><img class="img-fluid float-start" width="320" height="320" src="{{ post.photo.url }}"></p>
+{% if post.image %}
+<p><img class="img-fluid float-start" width="320" height="320" src="{{ post.image.url }}"></p>
 {% endif %}
 
 {{post.content|linebreaks}}

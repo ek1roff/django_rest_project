@@ -12,11 +12,11 @@ class AddPostForm(forms.ModelForm):
 
     class Meta:
         model = Blog
-        fields = ['title', 'content', 'photo', 'is_published', 'cat']
+        fields = ['title', 'content', 'image', 'is_published', 'cat']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'cols': 60, 'rows': 10, 'class': 'form-control'}),
-            'photo': forms.FileInput(attrs={'class': 'form-control'}),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-check'}),
             'cat': forms.Select(attrs={'class': 'form-control'}),
         }
@@ -29,6 +29,7 @@ class AddPostForm(forms.ModelForm):
 
 
 class CustomUserCreationForm(UserCreationForm):
+
     username = forms.CharField(label='Логин',
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='Email',
@@ -43,20 +44,29 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username', 'email', 'password1', 'password2')
 
 
-class CustomUserChangeForm(UserChangeForm):
-    username = forms.CharField(label='Логин',
-                               widget=forms.TextInput(attrs={'class': 'form-control'}),
-                               required=False)
-    first_name = forms.CharField(label='Имя',
-                                 widget=forms.TextInput(attrs={'class': 'form-control'}),
-                                 required=False)
-    last_name = forms.CharField(label='Фамилия',
-                                widget=forms.TextInput(attrs={'class': 'form-control'}),
-                                required=False)
-    avatar = forms.FileField(label='Аватар',
-                             widget=forms.FileInput(attrs={'class': 'form-control'}),
-                             required=False)
+class UserUpdateForm(UserChangeForm):
 
     class Meta:
         model = CustomUser
         fields = ('username', 'first_name', 'last_name', 'avatar')
+
+    def __init__(self, *args, **kwargs):
+        """
+        Обновление стилей формы под bootstrap
+        """
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({
+                'class': 'form-control',
+                'autocomplete': 'off'
+            })
+
+    def clean_email(self):
+        """
+        Проверка email на уникальность
+        """
+        email = self.cleaned_data.get('email')
+        username = self.cleaned_data.get('username')
+        if email and CustomUser.objects.filter(email=email).exclude(username=username).exists():
+            raise forms.ValidationError('Email адрес должен быть уникальным')
+        return email

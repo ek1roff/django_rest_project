@@ -14,8 +14,8 @@
       </div>
       <div class="row">
         <div class="col-4">
-            {% if user.profile.profile_pic %}
-             <img src="{{ profile.profile_pic.url }}" height=100 width=100 class="card-img-top">
+            {% if user.avatar %}
+             <img src="{{ user.avatar.url }}" height=200 width=200 class="">
             {% else %}
              <img src="{% static 'blog/images/cat.svg' %}" height=100 width=100 class="card-img-top">
             {% endif %}
@@ -27,9 +27,11 @@
     <div class="card-body">
 
 
-    <p><strong>Username:</strong>{{ page_user }}</p><br><br>
-    <p><strong>О себе:</strong> {{ profile.bio }}</p><br><br>
+    <p><strong>Username: </strong>{{ page_user }}</p><br><br>
+    <p><strong>Имя: </strong>{{ page_user.first_name }} {{ page_user.last_name }}</p><br><br>
+    <p><strong>О себе: </strong> {{ profile.bio }}</p><br><br>
     <p><strong>Зарегистрирован с </strong>{{ page_user.date_joined }}</p>
+    <a href="{% url 'update_profile' %}" class="btn btn-sm btn-primary">Редактировать профиль</a>
 
 
     </div>
@@ -55,7 +57,7 @@
         <h4 class="card-title">{{ p.title }}</h4>
       </div>
       <div class="row">
-        <div class="col-4"><img src="{{ p.photo.url }}" alt="" class="card-img-top"></div>
+        <div class="col-4"><img src="{{ p.image.url }}" alt="" class="card-img-top"></div>
         <div class="col-8">
           <div class="card-body">
             <div class="card-text">{{p.content|linebreaks|truncatewords:50}}</div>
@@ -69,10 +71,10 @@
           <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Читать</a>
         </div>
         <div class="col-3">
-          <small>Автор: <a href="{% url 'user_profile' pk=p.user_id %}">{{ p.user }}</a></small>
+          <small>Автор: <a href="">{{ p.user }}</a></small>
         </div>
         <div class="col-6">
-          <small>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</small>
+          <small>Дата: {{p.time_create|date:"d-m-Y H:i:s"}}</small>
         </div>
       </div>
     </div>

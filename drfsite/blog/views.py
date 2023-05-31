@@ -2,6 +2,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.db import transaction
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -11,7 +12,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 
-from .forms import AddPostForm, CustomUserCreationForm, CustomUserChangeForm
+from .forms import AddPostForm, CustomUserCreationForm, UserUpdateForm
 from .utils import DataMixin
 from .permissions import IsAdminOrReadOnly, IsOwnerOrReadOnly
 from .models import Blog, Category, CustomUser
@@ -82,7 +83,6 @@ class BlogCategory(DataMixin, ListView):
 
 
 class RegisterUser(DataMixin, CreateView):
-    # form_class = UserCreationForm
     form_class = CustomUserCreationForm
     template_name = 'blog/register.html'
     success_url = reverse_lazy('index')
@@ -122,31 +122,51 @@ class ProfilePage(ListView):
     context_object_name = 'posts'
 
     def get_queryset(self):
-        return Blog.objects.filter(user_id=self.kwargs['pk'])
+        return Blog.objects.filter(user__slug=self.kwargs['slug'])
+
+    # Blog.objects.filter(cat__slug=self.kwargs['cat_slug'], is_published=True).select_related('cat')
 
     def get_context_data(self, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
-        page_user = get_object_or_404(CustomUser, id=self.kwargs['pk'])
+        page_user = get_object_or_404(CustomUser, slug=self.kwargs['slug'])
         context['page_user'] = page_user
         return context
 
 
-class CreateProfilePageView(UpdateView):
+class UpdateProfile(UpdateView):
+    """
+      Представление для редактирования профиля 
+      """
     model = CustomUser
-    # form_class = CustomUserChangeForm
-    # template_name = 'blog/create_profile.html'
-    # success_url = reverse_lazy('index')
-    fields = ['username', 'first_name', 'last_name', 'avatar']
+    form_class = UserUpdateForm
+    template_name = 'blog/update_profile.html'
 
-    # def form_valid(self, form):
-    #     form.instance.user = self.request.user
-    #     return super().form_valid(form)
-    #
+    def get_object(self, queryset=None):
+        return self.request.user
 
-    def get_context_data(self, *, object_list=None, **kwargs):
+    def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        c_def = self.get_user_context(title="Настройки профиля")
-        return dict(list(context.items()) + list(c_def.items()))
+        context['title'] = f'Редактирование профиля пользователя: {self.request.user.username}'
+        if self.request.POST:
+            context['user_form'] = UserUpdateForm(self.request.POST, instance=self.request.user)
+        else:
+            context['user_form'] = UserUpdateForm(instance=self.request.user)
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        user_form = context['user_form']
+        with transaction.atomic():
+            if all([form.is_valid(), user_form.is_valid()]):
+                user_form.save()
+                form.save()
+            else:
+                context.update({'user_form': user_form})
+                return self.render_to_response(context)
+        return super(UpdateProfile, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('user_profile', kwargs={'slug': self.object.slug})
 
 
 # class AddPage(DataMixin, LoginRequiredMixin, CreateView):

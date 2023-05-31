@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from blog.views import (BlogHome, ShowPost, RegisterUser, BlogCategory,
-                        LoginUser, logout_user, addpage, about, ProfilePage, CreateProfilePageView)
+                        LoginUser, logout_user, addpage, about, ProfilePage, UpdateProfile)
 
 
 urlpatterns = [
@@ -15,6 +15,6 @@ urlpatterns = [
     path('about/', about, name='about'),
     #path('addpage/', AddPage.as_view(), name='addpage'),
     path('addpage/', addpage, name='addpage'),
-    path('user_profile/<int:pk>/', ProfilePage.as_view(), name='user_profile'),
-    path('create_profile_page/', CreateProfilePageView.as_view(), name='create_user_profile'),
+    path('user/update/', UpdateProfile.as_view(), name='update_profile'),
+    path('user/<str:slug>/', ProfilePage.as_view(), name='user_profile'),
 ]

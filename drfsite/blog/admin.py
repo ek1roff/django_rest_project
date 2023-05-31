@@ -1,32 +1,28 @@
-from urllib import request
-
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
-from django.db import models
 from django.utils.safestring import mark_safe
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .forms import CustomUserCreationForm, UserUpdateForm
 from .models import Blog, Category, CustomUser
 
 
 class BlogAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'time_create', 'get_html_photo', 'is_published')
+    list_display = ('id', 'title', 'time_create', 'get_html_image', 'is_published')
     list_display_links = ('id', 'title')
     search_fields = ('title', 'content')
     list_editable = ('is_published',)
     list_filter = ('is_published', 'time_create')
     # prepopulated_fields = {'slug': ('title',)}
-    fields = ('title', 'cat', 'content', 'photo', 'is_published',
-              'time_create', 'time_update', 'get_html_photo', 'user')
-    readonly_fields = ('time_create', 'time_update', 'get_html_photo')
+    fields = ('title', 'cat', 'content', 'image', 'is_published',
+              'time_create', 'get_html_image', 'user')
+    readonly_fields = ('time_create', 'get_html_image')
     save_on_top = True
 
-    def get_html_photo(self, object):
+    def get_html_image(self, object):
         if object.photo:
-            return mark_safe(f"<img src='{object.photo.url}' width=50>")
+            return mark_safe(f"<img src='{object.image.url}' width=50>")
 
-    get_html_photo.short_description = 'Фото'
+    get_html_image.short_description = 'Изображение'
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -36,12 +32,9 @@ class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 
-# admin.site.register(Blog, BlogAdmin)
-# admin.site.register(Category, CategoryAdmin)
-
 class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
-    form = CustomUserChangeForm
+    form = UserUpdateForm
     model = CustomUser
     list_display = ['email', 'username',]
 

@@ -5,12 +5,14 @@
 {% for p in posts %}
 <div class="container p-5">
   <div class="card" style="width:50rem">
-    <div class="container p-2">
-      <div class="row">
-        <h4 class="card-title">{{ p.title }}</h4>
+    <div class="container p-3">
+      <div class="row m-1">
+        <a href="{{ p.get_absolute_url }}" class="nav-link">
+          <h4 class="card-title">{{ p.title }}</h4>
+        </a>
       </div>
       <div class="row">
-        <div class="col-4"><img src="{{ p.photo.url }}" alt="" class="card-img-top"></div>
+        <div class="col-4"><img src="{{ p.image.url }}" alt="" class="card-img-top"></div>
         <div class="col-8">
           <div class="card-body">
             <div class="card-text">{{p.content|linebreaks|truncatewords:50}}</div>
@@ -24,10 +26,12 @@
           <a href="{{ p.get_absolute_url }}" class="btn btn-primary">Читать</a>
         </div>
         <div class="col-3">
-          <small>Автор: <a href="{% url 'user_profile' pk=p.user_id %}">{{ p.user }}</a></small>
+          <small>Автор:
+            <a href="{% url 'user_profile' slug=p.user %}" class="text-decoration-none text-reset">{{ p.user }}</a>
+          </small>
         </div>
         <div class="col-6">
-          <small>Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</small>
+          <small>Дата: {{p.time_create|date:"d-m-Y H:i:s"}}</small>
         </div>
       </div>
     </div>
